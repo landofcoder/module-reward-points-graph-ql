@@ -1,6 +1,6 @@
 # Mage2 Module Lof RewardPointsGraphQl
 
-    ``lof/module-RewardPointsGraphQl``
+    ``landofcoder/module-rewardPoints-graphql``
 
  - [Main Functionalities](#markdown-header-main-functionalities)
  - [Installation](#markdown-header-installation)
@@ -10,7 +10,7 @@
 
 
 ## Main Functionalities
-magento 2 rewardPoints graphql extension
+magento 2 rewardPoints graphql extension for [Lof RewardPoints extension (commerce version)](https://landofcoder.com/magento-2-reward-points.html/)
 
 ## Installation
 \* = in production please use the `--keep-generated` option
