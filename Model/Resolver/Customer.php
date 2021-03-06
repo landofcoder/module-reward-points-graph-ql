@@ -8,12 +8,16 @@ declare(strict_types=1);
 namespace Lof\RewardPointsGraphQl\Model\Resolver;
 
 use Lof\RewardPoints\Model\Transaction;
+use Magento\CustomerGraphQl\Model\Customer\GetCustomer;
 use Magento\Framework\GraphQl\Config\Element\Field;
+use Magento\Framework\GraphQl\Exception\GraphQlAuthorizationException;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Lof\RewardPoints\Model\Customer as CustomerRewardPoints;
 use Lof\RewardPoints\Model\ResourceModel\Transaction\CollectionFactory;
+use Magento\GraphQl\Model\Query\ContextInterface;
+
 /**
  * Class Customer
  * @package Lof\RewardPointsGraphQl\Model\Resolver
@@ -30,18 +34,25 @@ class Customer implements ResolverInterface
      * @var CollectionFactory
      */
     private $transactionCollection;
+    /**
+     * @var GetCustomer
+     */
+    private $getCustomer;
 
     /**
      * EarningRules constructor.
      * @param CustomerRewardPoints $customer
      * @param CollectionFactory $collectionFactory
+     * @param GetCustomer $getCustomer
      */
     public function __construct(
         CustomerRewardPoints $customer,
-        CollectionFactory $collectionFactory
+        CollectionFactory $collectionFactory,
+        GetCustomer $getCustomer
     )
     {
         $this->customer = $customer;
+        $this->getCustomer = $getCustomer;
         $this->transactionCollection = $collectionFactory;
     }
 
@@ -55,9 +66,12 @@ class Customer implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
-        if (!$args['customer_id']) {
-            throw new GraphQlInputException(__('Customer Id is required.'));
+        /** @var ContextInterface $context */
+        if (!$context->getExtensionAttributes()->getIsCustomer()) {
+            throw new GraphQlAuthorizationException(__('The current customer isn\'t authorized.'));
         }
+        $customer = $this->getCustomer->execute($context);
+        $args['customer_id'] = $customer->getId();
         $customer = $this->customer->load($args['customer_id'],'customer_id');
         $transactions = $this->transactionCollection->create()
             ->addFieldToFilter('customer_id',$args['customer_id'])

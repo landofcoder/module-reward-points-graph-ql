@@ -15,6 +15,8 @@ use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Lof\RewardPoints\Helper\Balance\Spend;
+
 
 /**
  * Class SpendingRuleRepository
@@ -47,6 +49,14 @@ class SpendingRuleRepository implements SpendingRuleRepositoryInterface
      * @var CollectionFactory
      */
     private $collection;
+    /**
+     * @var Spend
+     */
+    private $spend;
+    /**
+     * @var Spend
+     */
+    private $spendHelper;
 
     /**
      * EarningRuleRepository constructor.
@@ -56,6 +66,7 @@ class SpendingRuleRepository implements SpendingRuleRepositoryInterface
      * @param StoreManagerInterface $storeManager
      * @param CollectionProcessorInterface $collectionProcessor
      * @param JoinProcessorInterface $extensionAttributesJoinProcessor
+     * @param Spend $spendHelper
      */
     public function __construct(
         CollectionFactory $spendingCollection,
@@ -63,7 +74,8 @@ class SpendingRuleRepository implements SpendingRuleRepositoryInterface
         DataObjectHelper $dataObjectHelper,
         StoreManagerInterface $storeManager,
         CollectionProcessorInterface $collectionProcessor,
-        JoinProcessorInterface $extensionAttributesJoinProcessor
+        JoinProcessorInterface $extensionAttributesJoinProcessor,
+        Spend $spendHelper
     ) {
         $this->collection = $spendingCollection;
         $this->searchResultsFactory = $searchResultsFactory;
@@ -71,6 +83,7 @@ class SpendingRuleRepository implements SpendingRuleRepositoryInterface
         $this->storeManager = $storeManager;
         $this->collectionProcessor = $collectionProcessor;
         $this->extensionAttributesJoinProcessor = $extensionAttributesJoinProcessor;
+        $this->spendHelper = $spendHelper;
 
     }
 
@@ -79,9 +92,11 @@ class SpendingRuleRepository implements SpendingRuleRepositoryInterface
      * {@inheritdoc}
      */
     public function getList(
-        SearchCriteriaInterface $criteria
+        SearchCriteriaInterface $criteria,
+        $customerGroupId,
+        $storeId
     ) {
-        $collection = $this->collection->create();
+        $collection = $this->spendHelper->getRules($storeId, $customerGroupId);
 
         $this->collectionProcessor->process($criteria, $collection);
 
