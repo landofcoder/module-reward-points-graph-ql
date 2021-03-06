@@ -18,10 +18,14 @@ interface EarningRuleRepositoryInterface
 
     /**
      * @param SearchCriteriaInterface $searchCriteria
+     * @param $customerGroupId
+     * @param $storeId
      * @return mixed
      */
     public function getList(
-        SearchCriteriaInterface $searchCriteria
+        SearchCriteriaInterface $searchCriteria,
+        $customerGroupId,
+        $storeId
     );
 
 }

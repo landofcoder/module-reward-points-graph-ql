@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Lof\RewardPointsGraphQl\Model;
 
+use Lof\RewardPoints\Helper\Balance\Earn;
 use Lof\RewardPointsGraphQl\Api\EarningRuleRepositoryInterface;
 use Lof\RewardPoints\Model\ResourceModel\Earning\CollectionFactory;
 use Lof\RewardPointsGraphQl\Api\Data\EarningRuleSearchResultsInterfaceFactory;
@@ -47,6 +48,10 @@ class EarningRuleRepository implements EarningRuleRepositoryInterface
      * @var CollectionFactory
      */
     private $collection;
+    /**
+     * @var Earn
+     */
+    private $rewardsBalanceEarn;
 
     /**
      * EarningRuleRepository constructor.
@@ -56,6 +61,7 @@ class EarningRuleRepository implements EarningRuleRepositoryInterface
      * @param StoreManagerInterface $storeManager
      * @param CollectionProcessorInterface $collectionProcessor
      * @param JoinProcessorInterface $extensionAttributesJoinProcessor
+     * @param Earn $rewardsBalanceEarn
      */
     public function __construct(
         CollectionFactory $earningCollection,
@@ -63,7 +69,8 @@ class EarningRuleRepository implements EarningRuleRepositoryInterface
         DataObjectHelper $dataObjectHelper,
         StoreManagerInterface $storeManager,
         CollectionProcessorInterface $collectionProcessor,
-        JoinProcessorInterface $extensionAttributesJoinProcessor
+        JoinProcessorInterface $extensionAttributesJoinProcessor,
+        Earn $rewardsBalanceEarn
     ) {
         $this->collection = $earningCollection;
         $this->searchResultsFactory = $searchResultsFactory;
@@ -71,6 +78,7 @@ class EarningRuleRepository implements EarningRuleRepositoryInterface
         $this->storeManager = $storeManager;
         $this->collectionProcessor = $collectionProcessor;
         $this->extensionAttributesJoinProcessor = $extensionAttributesJoinProcessor;
+        $this->rewardsBalanceEarn  = $rewardsBalanceEarn;
 
     }
 
@@ -79,9 +87,11 @@ class EarningRuleRepository implements EarningRuleRepositoryInterface
      * {@inheritdoc}
      */
     public function getList(
-        SearchCriteriaInterface $criteria
+        SearchCriteriaInterface $criteria,
+        $customerGroupId,
+        $storeId
     ) {
-        $collection = $this->collection->create();
+        $collection = $this->rewardsBalanceEarn->getRules('',$storeId, $customerGroupId);
 
         $this->collectionProcessor->process($criteria, $collection);
 

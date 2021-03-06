@@ -2,6 +2,7 @@
 type Query {
 
     lofRewardPointsEarningRuleList (
+        storeId: String!
         search: String @doc(description: "Performs a full-text search using the specified key words."),
         filter: EarningRulesFilterInput @doc(description: "Identifies which Earning rule attributes to search for and return."),
         pageSize: Int = 20 @doc(description: "Specifies the maximum number of results to return at once. This attribute is optional."),
@@ -9,15 +10,14 @@ type Query {
     ) : EarningRules @resolver( class: "Lof\\RewardPointsGraphQl\\Model\\Resolver\\EarningRules") @doc(description: "Query Get list earning rules.")
 
     lofRewardPointsSpendingRuleList (
+        storeId: String!
         search: String @doc(description: "Performs a full-text search using the specified key words."),
         filter: SpendingRulesFilterInput @doc(description: "Identifies which Earning rule attributes to search for and return."),
         pageSize: Int = 20 @doc(description: "Specifies the maximum number of results to return at once. This attribute is optional."),
         currentPage: Int = 1 @doc(description: "Specifies which page of results to return. The default value is 1."),
     ) : SpendingRules @resolver( class: "Lof\\RewardPointsGraphQl\\Model\\Resolver\\SpendingRules") @doc(description: "Query Get list earning rules.")
 
-    lofRewardPointsCustomer (
-        customer_id  : Int  @doc(description: "Customer id.")
-    ) : RewardPointsCustomer @resolver (class: "Lof\\RewardPointsGraphQl\\Model\\Resolver\\Customer") @doc(description: "Query Get Customer reward points.")
+    lofRewardPointsCustomer : RewardPointsCustomer @resolver (class: "Lof\\RewardPointsGraphQl\\Model\\Resolver\\Customer") @doc(description: "Query Get Customer reward points.")
 }
 
 type RewardPointsCustomer {
