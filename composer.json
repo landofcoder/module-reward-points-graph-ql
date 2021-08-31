@@ -13,9 +13,6 @@
     "minimum-stability": "dev",
     "version": "1.0.0",
     "require": {
-        "landofcoder/module-rewardpoints": "*",
-        "landofcoder/module-rewardpointsbehavior": "*",
-        "landofcoder/module-rewardpointsrule": "*"
     },
     "autoload": {
         "psr-4": {
